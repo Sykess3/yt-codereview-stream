@@ -1,4 +1,4 @@
-﻿namespace Source.Models
+﻿namespace Source.Models.Balls
 {
     public class RedBall : Ball
     {

@@ -1,7 +1,7 @@
-﻿using Source.DataStructures;
-using Source.Infrastructure.Services;
+﻿using Source.Infrastructure.Services;
 using Source.Infrastructure.Services.AssetManagement;
 using Source.Infrastructure.Services.Factories;
+using Source.Models;
 
 namespace Source.Infrastructure.Root
 {
@@ -25,9 +25,6 @@ namespace Source.Infrastructure.Root
             _services.RegisterSingle<IBallsFactory>(new BallsFactory(
                 _services.Single<IConfigProvider>()));
 
-            _services.RegisterSingle<IRandomBall>(new RandomBall(
-                new BallsViewsObjectPool(_services.Single<IBallsFactory>())));
-            
             _services.RegisterSingle<IGameObjectsFactory>(new GameObjectsFactory(
                 _services));
         }

@@ -1,35 +1,38 @@
 ﻿using System.ComponentModel;
-using Source.DataStructures;
-using Source.Views;
+using Source.Models.Balls;
 using UnityEngine;
 
-namespace Source.Infrastructure.Services
+namespace Source.Models
 {
     public class RandomBall : IRandomBall
     {
         private const float RedBallChance = 1f;
-        private readonly BallsViewsObjectPool _pool;
+        private readonly BallsObjectPool _pool;
 
-        public RandomBall(BallsViewsObjectPool pool)
+        public RandomBall(BallsObjectPool pool)
         {
             _pool = pool;
             _pool.ReturnedToPool += OnReturnToPool;
         }
 
-        public BallView Get()
+        public Ball Get()
         {
             var random = Random.Range(0f, 1f);
             if (random < RedBallChance)
             {
                 var redBall = _pool.Get(BallType.Red);
-                redBall.Clicked += _pool.ReturnToPool;
+                redBall.Popped += _pool.ReturnToPool;
+                redBall.FeltOutOfBounds += _pool.ReturnToPool;
                 return redBall;
             }
 
             throw new InvalidEnumArgumentException();
         }
 
-        private void OnReturnToPool(BallView obj) => 
-            obj.Clicked -= _pool.ReturnToPool;
+        private void OnReturnToPool(Ball obj)
+        {
+            obj.Popped -= _pool.ReturnToPool;
+            obj.FeltOutOfBounds -= _pool.ReturnToPool;
+        }
     }
 }

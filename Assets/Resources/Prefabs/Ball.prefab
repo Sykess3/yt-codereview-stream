@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bda069c931df4b2bb4ccc73a1000eeec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _outOfCameraObserver: {fileID: 1150087000405188289}
 --- !u!1 &8105165195798121920
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,6 +57,7 @@ GameObject:
   - component: {fileID: 3772636735958680665}
   - component: {fileID: 4661152295908762444}
   - component: {fileID: 6150815958359841464}
+  - component: {fileID: 1150087000405188289}
   m_Layer: 6
   m_Name: Model
   m_TagString: Untagged
@@ -139,3 +141,15 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1150087000405188289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8105165195798121920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35297fec82d14dc9b873203329a6ab1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

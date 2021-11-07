@@ -1,4 +1,4 @@
-﻿namespace Source.Views
+﻿namespace Source.Models
 {
     public enum BallType
     {

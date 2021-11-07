@@ -1,15 +1,22 @@
 using System;
 using UnityEngine;
 
-namespace Source.Models
+namespace Source.Models.Balls
 {
     public abstract class Ball : IFixedUpdatable
     {
         private readonly IBallConfig _config;
-        private Vector3 _velocity;
         private Vector3 _position;
+        private bool _isPopped;
+        private bool _isOutOfBounds;
 
-        public Vector3 Position
+        public BallType Type => _config.Type;
+        public event Action<Vector3> PositionChanged;
+        public event Action<Ball> Popped;
+        public event Action<Ball> FeltOutOfBounds;
+        public event Action Initialized;
+
+        private Vector3 Position
         {
             get => _position;
             set
@@ -19,42 +26,55 @@ namespace Source.Models
             }
         }
 
-        public event Action<Vector3> PositionChanged;
-
-        public Ball(IBallConfig config)
+        protected Ball(IBallConfig config)
         {
             _config = config;
-            _velocity = new Vector3(0, -_config.StartSpeed, 0);
         }
 
-
-        public void FixedUpdate(float fixedDeltaTime) => Fall(fixedDeltaTime);
-
-        private void Fall(float fixedDeltaTime)
+        public void Initialize(Vector3 startPosition)
         {
-            Position += _velocity * fixedDeltaTime;
+            _isPopped = false;
+            _isOutOfBounds = false;
+            Position = startPosition;
+            Initialized?.Invoke();
+        }
+        
+        public void FixedUpdate(float fixedDeltaTime)
+        {
+            if (_isPopped || _isOutOfBounds)
+                return;
+
+            Fall(fixedDeltaTime);
         }
 
         public void Pop()
         {
+            _isPopped = true;
             OnPop();
+            Popped?.Invoke(this);
+        }
+
+        public void FallOutOfBounds()
+        {
+            _isOutOfBounds = true;
+            FeltOutOfBounds?.Invoke(this);
         }
 
         protected virtual void OnPop()
         {
         }
 
+        private void Fall(float fixedDeltaTime)
+        {
+            Position += _config.Velocity * fixedDeltaTime;
+        }
+
         public void IncreaseSpeedBy(float number)
         {
-            _velocity.y += number;
         }
 
         public void DecreaseSpeedBy(float number)
         {
-            _velocity.y -= number;
-
-            if (_velocity.y < 0)
-                _velocity.y = 0;
         }
     }
 }

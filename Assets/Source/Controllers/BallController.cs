@@ -1,6 +1,8 @@
 ﻿using System;
 using Source.Models;
+using Source.Models.Balls;
 using Source.Views;
+using UnityEngine;
 
 namespace Source.Controllers
 {
@@ -15,14 +17,34 @@ namespace Source.Controllers
         {
             _model.PositionChanged += _view.ChangePosition;
             _view.Clicked += OnClick;
+            _view.FeltOutOfBounds += OnFeltOutOfBounds;
+            _model.Initialized += OnModelInitialize;
         }
 
         protected override void UnSubscribe()
         {
             _model.PositionChanged -= _view.ChangePosition;
             _view.Clicked -= OnClick;
+            _view.FeltOutOfBounds -= OnFeltOutOfBounds;
+            _model.Initialized -= OnModelInitialize;
         }
 
-        private void OnClick(BallView ballView) => _model.Pop();
+        private void OnModelInitialize()
+        {
+            _view.gameObject.SetActive(true);
+            Physics.SyncTransforms();
+        }
+
+        private void OnFeltOutOfBounds(BallView ballView)
+        {
+            _model.FallOutOfBounds();
+            ballView.gameObject.SetActive(false);
+        }
+
+        private void OnClick(BallView ballView)
+        {
+            _model.Pop();
+            ballView.gameObject.SetActive(false);
+        }
     }
 }

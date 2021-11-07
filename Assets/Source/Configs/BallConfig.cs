@@ -1,4 +1,5 @@
-﻿using Source.Infrastructure;
+﻿using System;
+using Source.Infrastructure;
 using Source.Infrastructure.Services;
 using Source.Models;
 using Source.Views;
@@ -13,10 +14,13 @@ namespace Source.Configs
         [SerializeField] private BallType _type;
         [Tooltip("Units is second")]
         [SerializeField] private float _startSpeed;
-        public BallView Prefab => _ballView;
 
-        public float StartSpeed => _startSpeed;
+        private Vector3 _velocity;
+        
+        public BallView Prefab => _ballView;
         public BallType Type => _type;
         BallType IConfigWithIdentifier<BallType>.Identifier => _type;
+        public Vector3 Velocity => _velocity;
+        private void OnValidate() => _velocity = new Vector3(0, -_startSpeed, 0);
     }
 }

@@ -1,7 +1,10 @@
-﻿namespace Source.Models
+﻿using UnityEngine;
+
+namespace Source.Models
 {
     public interface IBallConfig
     {
-        float StartSpeed { get; }
+        Vector3 Velocity { get; }
+        BallType Type { get; }
     }
 }

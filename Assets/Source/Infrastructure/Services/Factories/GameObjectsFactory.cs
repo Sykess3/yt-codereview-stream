@@ -1,5 +1,7 @@
 ﻿using Source.Configs;
+using Source.Controllers;
 using Source.Infrastructure.Services.AssetManagement;
+using Source.Models;
 using Source.Views;
 using UnityEngine;
 
@@ -10,13 +12,11 @@ namespace Source.Infrastructure.Services.Factories
         private readonly ServiceLocator _services;
         private readonly IAssetsProvider _assetsProvider;
         private readonly IConfigProvider _configProvider;
-        private readonly IRandomBall _randomBall;
 
         public GameObjectsFactory(ServiceLocator services)
         {
             _services = services;
             _assetsProvider = services.Single<IAssetsProvider>();
-            _randomBall = services.Single<IRandomBall>();
             _configProvider = services.Single<IConfigProvider>();
         }
 
@@ -37,11 +37,13 @@ namespace Source.Infrastructure.Services.Factories
             return input.Construct(camera);
         }
 
-        public void CreateBallsSpawner(string currentSceneName)
+        public void CreateBallsSpawner(string currentSceneName, IRandomBall randomBall)
         {
-            var ballsSpawner = new GameObject().AddComponent<BallsSpawner>();
             LevelConfig config = _configProvider.Get<LevelConfig, string>(identifier: currentSceneName, ConfigPath.Levels);
-            ballsSpawner.Construct(_randomBall, config);
+            
+            var ballsSpawnerView = _assetsProvider.Instantiate<BallsSpawnerView>(PrefabPath.BallsSpawnerView);
+            var ballsSpawnerModel = new BallsSpawner(randomBall, config);
+            new BallsSpawnerController(ballsSpawnerView, ballsSpawnerModel).Initialize();
         }
     }
 }

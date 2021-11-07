@@ -18,16 +18,30 @@ namespace Source.Controllers
 
         public void Initialize()
         {
-            View.Enabled += OnEnable;
-            View.Disabled += OnDisable;
+            View.Created += OnCreated;
+            View.Destroyed += OnDestroy;
+            
+            View.OnCreate();
         }
 
-        private void OnEnable()
+        private void OnCreated()
         {
-            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(out var model, out var view))
-                view.OnFixedUpdate += model.FixedUpdate;
+            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(
+                out var fixedUpdatableModel, out var fixedUpdatableView))
+                fixedUpdatableView.OnFixedUpdate += fixedUpdatableModel.FixedUpdate;
+            if (UnityCallBackFunctionsContractIsCorrect<IUpdatableView, UpdatablaView>(
+                out var updatableModel, out var updatableView)) 
+                updatableView.OnUpdate += updatableModel.Update;
 
             Subscribe();
+        }
+
+        private void OnDestroy()
+        {
+            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(out var model, out var view))
+                view.OnFixedUpdate -= model.FixedUpdate;
+            
+            UnSubscribe();
         }
 
         private bool UnityCallBackFunctionsContractIsCorrect< TModel, TView>(out TModel upcastedModel, out TView upcastedView)
@@ -43,14 +57,6 @@ namespace Source.Controllers
             upcastedView = default;
             
             return false;
-        }
-
-        private void OnDisable()
-        {
-            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(out var model, out var view))
-                view.OnFixedUpdate -= model.FixedUpdate;
-            
-            UnSubscribe();
         }
 
         protected abstract void UnSubscribe();

@@ -1,4 +1,4 @@
-﻿namespace Source.Infrastructure.Services
+﻿namespace Source.Configs
 {
     public interface IConfigWithIdentifier<T>
     {

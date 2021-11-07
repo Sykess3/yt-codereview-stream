@@ -1,4 +1,6 @@
-﻿namespace Source.Infrastructure.Services
+﻿using Source.Configs;
+
+namespace Source.Infrastructure.Services
 {
     public interface IConfigProvider
     {

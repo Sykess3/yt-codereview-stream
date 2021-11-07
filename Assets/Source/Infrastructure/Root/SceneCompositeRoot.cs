@@ -26,9 +26,12 @@ namespace Source.Infrastructure.Root
             var camera = _gameObjectsFactory.CreateCamera();
             IPlayerInput input = _gameObjectsFactory.CreateInput(camera);
             _gameObjectsFactory.CreateBallsInputHandler(input);
-            _gameObjectsFactory.CreateBallsSpawner(CurrentSceneName());
+            _gameObjectsFactory.CreateBallsSpawner(CurrentSceneName(), BallsRandomizator());
             
         }
+
+        private RandomBall BallsRandomizator() => 
+            new RandomBall(new BallsObjectPool(_services.Single<IBallsFactory>()));
 
         private static string CurrentSceneName() => SceneManager.GetActiveScene().name;
     }

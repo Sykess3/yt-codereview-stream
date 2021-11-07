@@ -1,19 +1,15 @@
 ﻿using System;
 using Source.Configs;
 using Source.Controllers;
-using Source.DataStructures;
 using Source.Infrastructure.Services.AssetManagement;
 using Source.Models;
+using Source.Models.Balls;
 using Source.Views;
+using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace Source.Infrastructure.Services.Factories
 {
-    public interface IBallsFactory
-    {
-        BallView Create(BallType type);
-    }
-
     public class BallsFactory : IBallsFactory
     {
         private readonly IConfigProvider _configProvider;
@@ -23,7 +19,7 @@ namespace Source.Infrastructure.Services.Factories
             _configProvider = configProvider;
         }
 
-        public BallView Create(BallType type)
+        public Ball Create(BallType type)
         {
             switch (type)
             {
@@ -34,16 +30,15 @@ namespace Source.Infrastructure.Services.Factories
             }
         }
 
-        private BallView CreateRedBall()
+        private Ball CreateRedBall()
         {
             var ballConfig = _configProvider.Get<BallConfig, BallType>(identifier: BallType.Red, ConfigPath.Balls);
             
             BallView ballView = Object.Instantiate(ballConfig.Prefab);
-            ballView.Construct(ballConfig.Type);
             var ballModel = new RedBall(ballConfig);
             new BallController(ballView, ballModel).Initialize();
 
-            return ballView;
+            return ballModel;
         }
     }
 }
