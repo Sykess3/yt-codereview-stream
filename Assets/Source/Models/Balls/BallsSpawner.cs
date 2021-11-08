@@ -12,7 +12,6 @@ namespace Source.Models.Balls
         public const int MaxBallsByOneSpawn = 4;
         private readonly IRandomBallGenerator _randomBallGeneratorGenerator;
         private readonly IRandomPositionGenerator _randomPositionGenerator;
-        private readonly IBallsCollision _collision;
         private readonly LevelConfig _levelConfig;
         private readonly Ball[] _randomBalls;
         private float _timeToSpawn;
@@ -21,13 +20,11 @@ namespace Source.Models.Balls
         public BallsSpawner(
             IRandomBallGenerator randomBallGeneratorGenerator,
             LevelConfig levelConfig,
-            IRandomPositionGenerator randomPositionGenerator,
-            IBallsCollision collision)
+            IRandomPositionGenerator randomPositionGenerator)
         {
             _randomBallGeneratorGenerator = randomBallGeneratorGenerator;
             _levelConfig = levelConfig;
             _randomPositionGenerator = randomPositionGenerator;
-            _collision = collision;
             _randomBalls = new Ball[MaxBallsByOneSpawn];
         }
 
@@ -37,25 +34,23 @@ namespace Source.Models.Balls
             if (!TimeForSpawnPassed())
                 return;
 
-            IEnumerable<Ball> initializedBalls = CreateRandomAmountOfBalls();
-            _collision.Chek(initializedBalls, onCollisionDetected: SetRandomPositionTo);
+            CreateRandomAmountOfBalls();
             UpdateTimeToSpawn();
         }
 
-        private IEnumerable<Ball> CreateRandomAmountOfBalls()
+        private void CreateRandomAmountOfBalls()
         {
             var count = Random.Range(1, MaxBallsByOneSpawn + 1);
             FillRandomBallArray(count);
-            return InitializeBallsByPositions(count);
+            InitializeBallsByPositions(count);
         }
 
-        private IEnumerable<Ball> InitializeBallsByPositions(int count)
+        private void InitializeBallsByPositions(int count)
         {
             for (int i = 0; i < count; i++)
             {
                 Ball randomBall = _randomBalls[i];
                 SetRandomPositionTo(randomBall);
-                yield return randomBall;
             }
         }
 

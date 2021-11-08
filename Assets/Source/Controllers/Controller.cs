@@ -34,12 +34,6 @@ namespace Source.Controllers
             if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView>(
                 out var updatableModel, out var updatableView))
                 updatableView.OnUpdate += updatableModel.Update;
-            if (UnityCallBackFunctionsContractIsCorrect<ITriggerable, ITriggerView>
-                (out var triggerableModel, out var triggerView))
-            {
-                triggerView.TriggerEntered += triggerableModel.OnTriggerEnter;
-                triggerView.TriggerExited += triggerableModel.OnTriggerExited;
-            }
 
             Subscribe();
         }
@@ -51,13 +45,7 @@ namespace Source.Controllers
             if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView>(
                 out var updatableModel, out var updatableView))
                 updatableView.OnUpdate -= updatableModel.Update;
-            if (UnityCallBackFunctionsContractIsCorrect<ITriggerable, ITriggerView>
-                (out var triggerableModel, out var triggerView))
-            {
-                triggerView.TriggerEntered -= triggerableModel.OnTriggerEnter;
-                triggerView.TriggerExited -= triggerableModel.OnTriggerExited;
-            }
-            
+
             UnSubscribe();
         }
 

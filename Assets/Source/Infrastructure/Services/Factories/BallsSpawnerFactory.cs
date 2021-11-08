@@ -42,17 +42,10 @@ namespace Source.Infrastructure.Services.Factories
         {
             LevelConfig config = _configProvider.Get<LevelConfig, string>(identifier: currentSceneName, ConfigPath.Levels);
             
-            var ballsSpawnerModel = new BallsSpawner(_randomBallGenerator, config, _randomPositionGenerator, BallCollisionChecker());
+            var ballsSpawnerModel = new BallsSpawner(_randomBallGenerator, config, _randomPositionGenerator);
             new BallsSpawnerController(_updatableView, ballsSpawnerModel).Initialize();
             
             return ballsSpawnerModel;
-        }
-
-        private IBallsCollision BallCollisionChecker()
-        {
-            var ballsCollision = new BallsCollision();
-            new BallsCollisionController(_fixedUpdatableView, ballsCollision).Initialize();
-            return ballsCollision;
         }
     }
 }

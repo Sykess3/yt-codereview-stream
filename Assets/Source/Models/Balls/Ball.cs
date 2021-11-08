@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Source.Models.Balls
 {
-    public abstract class Ball : IFixedUpdatable, ITriggerable
+    public abstract class Ball : IFixedUpdatable
     {
         private readonly IBallConfig _config;
         private Vector3 _position;
@@ -12,7 +12,6 @@ namespace Source.Models.Balls
         private bool _isOutOfBounds;
 
         public BallType Type => _config.Type;
-        public bool IsInsideOtherBall;
         public event Action<Vector3> PositionChanged;
         public event Action<Ball> Popped;
         public event Action<Ball> FeltOutOfBounds;
@@ -55,11 +54,6 @@ namespace Source.Models.Balls
             OnPop();
             Popped?.Invoke(this);
         }
-
-        public void OnTriggerEnter() => IsInsideOtherBall = true;
-
-        public void OnTriggerExited() => IsInsideOtherBall = false;
-
         public void FallOutOfBounds()
         {
             _isOutOfBounds = true;
