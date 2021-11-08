@@ -7,5 +7,6 @@ namespace Source.Infrastructure.Services.AssetManagement
         GameObject Instantiate(string path);
         GameObject Instantiate(string path, Vector3 at);
         T Instantiate<T>(string path) where T : Object;
+        T Load<T>(string path) where T : Object;
     }
 }

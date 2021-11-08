@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Source.Models.Balls;
+using UnityEngine;
 
-namespace Source.Models
+namespace Source.Models.Configs
 {
     public interface IBallConfig
     {

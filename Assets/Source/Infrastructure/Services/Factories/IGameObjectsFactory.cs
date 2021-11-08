@@ -1,4 +1,6 @@
 ﻿using Source.Models;
+using Source.Models.Balls;
+using Source.Models.Randomizators;
 using Source.Views;
 using UnityEngine;
 
@@ -9,6 +11,5 @@ namespace Source.Infrastructure.Services.Factories
         Camera CreateCamera();
         BallsInputHandler CreateBallsInputHandler(IPlayerInput input);
         IPlayerInput CreateInput(Camera camera);
-        void CreateBallsSpawner(string currentSceneName, IRandomBall randomBall);
     }
 }

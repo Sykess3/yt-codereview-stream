@@ -1,9 +1,10 @@
 using System;
+using Source.Models.Configs;
 using UnityEngine;
 
 namespace Source.Models.Balls
 {
-    public abstract class Ball : IFixedUpdatable
+    public abstract class Ball : IFixedUpdatable, ITriggerable
     {
         private readonly IBallConfig _config;
         private Vector3 _position;
@@ -11,6 +12,7 @@ namespace Source.Models.Balls
         private bool _isOutOfBounds;
 
         public BallType Type => _config.Type;
+        public bool IsInsideOtherBall;
         public event Action<Vector3> PositionChanged;
         public event Action<Ball> Popped;
         public event Action<Ball> FeltOutOfBounds;
@@ -54,6 +56,10 @@ namespace Source.Models.Balls
             Popped?.Invoke(this);
         }
 
+        public void OnTriggerEnter() => IsInsideOtherBall = true;
+
+        public void OnTriggerExited() => IsInsideOtherBall = false;
+
         public void FallOutOfBounds()
         {
             _isOutOfBounds = true;
@@ -67,14 +73,6 @@ namespace Source.Models.Balls
         private void Fall(float fixedDeltaTime)
         {
             Position += _config.Velocity * fixedDeltaTime;
-        }
-
-        public void IncreaseSpeedBy(float number)
-        {
-        }
-
-        public void DecreaseSpeedBy(float number)
-        {
         }
     }
 }

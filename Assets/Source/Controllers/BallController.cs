@@ -2,6 +2,7 @@
 using Source.Models;
 using Source.Models.Balls;
 using Source.Views;
+using Source.Views.Balls;
 using UnityEngine;
 
 namespace Source.Controllers
@@ -15,9 +16,9 @@ namespace Source.Controllers
 
         protected override void Subscribe()
         {
-            _model.PositionChanged += _view.ChangePosition;
             _view.Clicked += OnClick;
             _view.FeltOutOfBounds += OnFeltOutOfBounds;
+            _model.PositionChanged += _view.ChangePosition;
             _model.Initialized += OnModelInitialize;
         }
 

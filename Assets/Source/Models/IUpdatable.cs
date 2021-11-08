@@ -1,6 +1,6 @@
 ﻿namespace Source.Models
 {
-    public interface IUpdatableView : IModel
+    public interface IUpdatable : IModel
     {
         void Update(float deltaTime);
     }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Source.Views
 {
-    public class View : MonoBehaviour
+    public abstract class View : MonoBehaviour
     {
         public event Action Destroyed;
         public event Action Created;

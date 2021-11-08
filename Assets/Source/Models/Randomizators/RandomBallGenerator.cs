@@ -1,15 +1,16 @@
 ﻿using System.ComponentModel;
 using Source.Models.Balls;
+using Source.Models.DataStructures;
 using UnityEngine;
 
-namespace Source.Models
+namespace Source.Models.Randomizators
 {
-    public class RandomBall : IRandomBall
+    public class RandomBallGenerator : IRandomBallGenerator
     {
         private const float RedBallChance = 1f;
         private readonly BallsObjectPool _pool;
 
-        public RandomBall(BallsObjectPool pool)
+        public RandomBallGenerator(BallsObjectPool pool)
         {
             _pool = pool;
             _pool.ReturnedToPool += OnReturnToPool;

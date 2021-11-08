@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c5297f742714faab1f1b736b4270b8e, type: 3}
   m_Name: SampleScene
   m_EditorClassIdentifier: 
-  _maxTimeToSpawnInSeconds: 3
-  _minTimeToSpawnInSeconds: 1
+  _maxTimeToSpawnInSeconds: 2
+  _minTimeToSpawnInSeconds: 0.5
   _sceneName: SampleScene

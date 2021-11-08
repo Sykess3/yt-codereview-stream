@@ -1,6 +1,8 @@
 ﻿using System;
 using Source.Models;
+using Source.Models.Balls;
 using Source.Views;
+using Source.Views.Balls;
 using Unity.Collections.LowLevel.Unsafe;
 
 namespace Source.Controllers
@@ -29,9 +31,15 @@ namespace Source.Controllers
             if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(
                 out var fixedUpdatableModel, out var fixedUpdatableView))
                 fixedUpdatableView.OnFixedUpdate += fixedUpdatableModel.FixedUpdate;
-            if (UnityCallBackFunctionsContractIsCorrect<IUpdatableView, UpdatablaView>(
-                out var updatableModel, out var updatableView)) 
+            if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView>(
+                out var updatableModel, out var updatableView))
                 updatableView.OnUpdate += updatableModel.Update;
+            if (UnityCallBackFunctionsContractIsCorrect<ITriggerable, ITriggerView>
+                (out var triggerableModel, out var triggerView))
+            {
+                triggerView.TriggerEntered += triggerableModel.OnTriggerEnter;
+                triggerView.TriggerExited += triggerableModel.OnTriggerExited;
+            }
 
             Subscribe();
         }
@@ -40,6 +48,15 @@ namespace Source.Controllers
         {
             if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(out var model, out var view))
                 view.OnFixedUpdate -= model.FixedUpdate;
+            if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView>(
+                out var updatableModel, out var updatableView))
+                updatableView.OnUpdate -= updatableModel.Update;
+            if (UnityCallBackFunctionsContractIsCorrect<ITriggerable, ITriggerView>
+                (out var triggerableModel, out var triggerView))
+            {
+                triggerView.TriggerEntered -= triggerableModel.OnTriggerEnter;
+                triggerView.TriggerExited -= triggerableModel.OnTriggerExited;
+            }
             
             UnSubscribe();
         }

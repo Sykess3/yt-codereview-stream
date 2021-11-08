@@ -1,6 +1,6 @@
 ﻿using Source.Models.Balls;
 
-namespace Source.Models
+namespace Source.Models.Factories
 {
     public interface IBallsFactory
     {

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Source.Models.Balls;
+using Source.Models.Factories;
 
-namespace Source.Models
+namespace Source.Models.DataStructures
 {
     public class BallsObjectPool 
     {

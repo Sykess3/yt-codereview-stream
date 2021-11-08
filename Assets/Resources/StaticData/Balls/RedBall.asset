@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ballView: {fileID: 4199207678793937410, guid: 450f21c42c2d8e140b51922100404cee, type: 3}
   _type: 0
-  _startSpeed: 3
+  _startSpeed: 4

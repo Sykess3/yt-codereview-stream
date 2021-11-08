@@ -1,7 +1,11 @@
 ﻿using Source.Infrastructure.Services;
 using Source.Infrastructure.Services.AssetManagement;
 using Source.Infrastructure.Services.Factories;
-using Source.Models;
+using Source.Models.Balls;
+using Source.Models.Factories;
+using Source.Models.Randomizators;
+using Source.Views;
+using UnityEngine;
 
 namespace Source.Infrastructure.Root
 {
@@ -22,11 +26,37 @@ namespace Source.Infrastructure.Root
             _services.RegisterSingle<IAssetsProvider>(new AssetsProvider());
 
             _services.RegisterSingle<IConfigProvider>(new ConfigProvider());
-            _services.RegisterSingle<IBallsFactory>(new BallsFactory(
+            
+            _services.RegisterSingle<IRandomPositionGenerator>(GetRandomPositionGenerator());
+            
+            _services.RegisterSingle<IViewsFactory>(new ViewsFactory(
+                _services.Single<IAssetsProvider>(),
                 _services.Single<IConfigProvider>()));
+            
+            _services.RegisterSingle<IBallsSpawnerFactory>(new BallsSpawnerFactory(
+                _services.Single<IConfigProvider>(),
+                _services.Single<IRandomPositionGenerator>()));
+            
+            _services.RegisterSingle<IBallsFactory>(new BallsFactory(
+                _services.Single<IConfigProvider>(),
+                _services.Single<IViewsFactory>()));
 
             _services.RegisterSingle<IGameObjectsFactory>(new GameObjectsFactory(
                 _services));
+        }
+
+        private RandomPositionGenerator GetRandomPositionGenerator()
+        {
+            var assetsProvider = _services.Single<IAssetsProvider>();
+            var camera = assetsProvider.Load<Camera>(PrefabPath.Camera);
+            
+            Vector3 screenToWorldPoint = camera.ScreenToWorldPoint(
+                new Vector3(Screen.width , Screen.height, 10));
+            
+            (float, float) xBorders = (-screenToWorldPoint.x * 0.5f, screenToWorldPoint.x * 0.5f);
+            float height = screenToWorldPoint.y;
+            float depth = screenToWorldPoint.z;
+            return new RandomPositionGenerator(xBorders, depth, height, BallsSpawner.MaxBallsByOneSpawn);
         }
     }
 }

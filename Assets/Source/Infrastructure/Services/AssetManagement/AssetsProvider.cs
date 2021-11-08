@@ -1,7 +1,6 @@
-﻿using Source.Infrastructure.Services.AssetManagement;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Source.Infrastructure.Services
+namespace Source.Infrastructure.Services.AssetManagement
 {
     public class AssetsProvider : IAssetsProvider
     {
@@ -21,5 +20,8 @@ namespace Source.Infrastructure.Services
             var gameObject = Resources.Load<T>(path);
             return Object.Instantiate(gameObject);
         }
+
+        public T Load<T>(string path) where T : Object => 
+            Resources.Load<T>(path);
     }
 }
