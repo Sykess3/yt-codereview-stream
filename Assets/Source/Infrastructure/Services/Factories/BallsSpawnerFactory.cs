@@ -15,35 +15,29 @@ namespace Source.Infrastructure.Services.Factories
     {
         private readonly IConfigProvider _configProvider;
         private readonly IRandomPositionGenerator _randomPositionGenerator;
-        private FixedUpdatableView _fixedUpdatableView;
-        private UpdatableView _updatableView;
+        private readonly IViewsFactory _viewsFactory;
         private IRandomBallGenerator _randomBallGenerator;
 
         public BallsSpawnerFactory(
             IConfigProvider configProvider,
-            IRandomPositionGenerator randomPositionGenerator)
+            IRandomPositionGenerator randomPositionGenerator,
+            IViewsFactory viewsFactory)
         {
             _configProvider = configProvider;
             _randomPositionGenerator = randomPositionGenerator;
+            _viewsFactory = viewsFactory;
         }
 
-        public void Initialize(
-            FixedUpdatableView fixedUpdatableView,
-            UpdatableView updatableView,
-            BallsObjectPool ballsObjectPool)
-        {
-            _fixedUpdatableView = fixedUpdatableView;
-            _updatableView = updatableView;
+        public void Initialize(BallsObjectPool ballsObjectPool) => 
             _randomBallGenerator = new RandomBallGenerator(ballsObjectPool);
-
-        }
 
         public BallsSpawner CreateSpawner(string currentSceneName)
         {
             LevelConfig config = _configProvider.Get<LevelConfig, string>(identifier: currentSceneName, ConfigPath.Levels);
             
             var ballsSpawnerModel = new BallsSpawner(_randomBallGenerator, config, _randomPositionGenerator);
-            new BallsSpawnerController(_updatableView, ballsSpawnerModel).Initialize();
+            var ballsSpawnerView = _viewsFactory.CreateBallsSpawnerView();
+            new BallsSpawnerController(ballsSpawnerView, ballsSpawnerModel).Initialize();
             
             return ballsSpawnerModel;
         }

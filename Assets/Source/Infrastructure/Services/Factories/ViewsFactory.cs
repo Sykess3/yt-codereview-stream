@@ -1,20 +1,19 @@
 ﻿using Source.Configs;
-using Source.Infrastructure.Services;
 using Source.Infrastructure.Services.AssetManagement;
 using Source.Models.Balls;
+using Source.Views;
 using Source.Views.Balls;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace Source.Views
+namespace Source.Infrastructure.Services.Factories
 {
     public class ViewsFactory : IViewsFactory
     {
         private readonly IAssetsProvider _assetsProvider;
         private readonly IConfigProvider _configProvider;
         private Transform _ballsParent;
-        private FixedUpdatableView _fixedUpdatableView;
-        private UpdatableView _updatableView;
+        private Transform _otherViewsParent;
 
         public ViewsFactory(IAssetsProvider assetsProvider, IConfigProvider configProvider)
         {
@@ -22,26 +21,23 @@ namespace Source.Views
             _configProvider = configProvider;
         }
 
-        public FixedUpdatableView CreateFixedUpdatable()
+        public FallingAccelerationView CreateSpeedCalculatorView()
         {
-            if (_fixedUpdatableView == null)
-                _fixedUpdatableView = new GameObject("FixedUpdatableView").AddComponent<FixedUpdatableView>();
-
-            return _fixedUpdatableView;
+            var speedCalculatorObject = new GameObject("SpeedCalculator");
+            SetViewsParentTo(speedCalculatorObject);
+            return speedCalculatorObject.AddComponent<FallingAccelerationView>();
         }
 
-        public UpdatableView CreateUpdatable()
-        {
-            if (_updatableView == null) 
-                _updatableView = new GameObject("UpdatableView").AddComponent<UpdatableView>();
-
-            return _updatableView;
-        }
+        public BallsSpawnerView CreateBallsSpawnerView() => 
+            new GameObject("BallsSpawnerView").AddComponent<BallsSpawnerView>();
 
         public BallView CreateBallView(BallType type)
         {
             if (_ballsParent == null)
+            {
                 _ballsParent = new GameObject("Balls").transform;
+                SetViewsParentTo(_ballsParent.gameObject);
+            }
 
             switch (type)
             {
@@ -56,6 +52,14 @@ namespace Source.Views
         {
             var config = _configProvider.Get<BallConfig, BallType>(identifier: BallType.Red, ConfigPath.Balls);
             return Object.Instantiate(config.Prefab, _ballsParent);
+        }
+
+        private void SetViewsParentTo(GameObject gameObject)
+        {
+            if (_otherViewsParent == null)
+                _otherViewsParent = new GameObject("Views").transform;
+
+            gameObject.transform.parent = _otherViewsParent;
         }
     }
 }

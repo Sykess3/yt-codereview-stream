@@ -6,10 +6,7 @@ namespace Source.Infrastructure.Services.Factories
 {
     public interface IBallsSpawnerFactory
     {
-        void Initialize(
-            FixedUpdatableView fixedUpdatableView,
-            UpdatableView updatableView,
-            BallsObjectPool ballsObjectPool);
+        void Initialize(BallsObjectPool ballsObjectPool);
 
         BallsSpawner CreateSpawner(string currentSceneName);
     }

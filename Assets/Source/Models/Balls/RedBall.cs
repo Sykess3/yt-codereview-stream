@@ -1,10 +1,8 @@
-﻿using Source.Models.Configs;
-
-namespace Source.Models.Balls
+﻿namespace Source.Models.Balls
 {
     public class RedBall : Ball
     {
-        public RedBall(IBallConfig config) : base(config)
+        public RedBall(IBallConfig config, FallingAcceleration fallingAcceleration) : base(config, fallingAcceleration)
         {
         }
     }

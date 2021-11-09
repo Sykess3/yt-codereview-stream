@@ -1,25 +1,32 @@
-﻿using Source.Models.DataStructures;
+﻿using System;
+using Source.Models.DataStructures;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Source.Models.Randomizators
 {
     public class RandomPositionGenerator : IRandomPositionGenerator
     {
         private const float PositionDifference = 1.2f;
-        private readonly CircularArray<Vector3> _positionsDoNotRepeat;
         private readonly (float, float) _xBorders;
         private readonly float _depth;
         private readonly float _height;
+        
+        private CircularArray<Vector3> _positionsDoNotRepeat;
+
         public RandomPositionGenerator
             ((float, float) xBorders,
             float depth,
-            float height,  
-            int positionsCountDoNotRepeat)
+            float height)
         {
             _xBorders = xBorders;
             _depth = depth;
-            _height = height;
-            _positionsDoNotRepeat = new CircularArray<Vector3>(positionsCountDoNotRepeat);
+            _height = height; ;
+        }
+
+        public void Initialize(int positionsDoNotRepeatAmount)
+        {
+            _positionsDoNotRepeat = new CircularArray<Vector3>(positionsDoNotRepeatAmount);
         }
         
         public Vector3 Generate()

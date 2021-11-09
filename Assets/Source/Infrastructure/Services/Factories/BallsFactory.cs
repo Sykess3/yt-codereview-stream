@@ -16,11 +16,13 @@ namespace Source.Infrastructure.Services.Factories
     {
         private readonly IConfigProvider _configProvider;
         private readonly IViewsFactory _viewsFactory;
+        private readonly IFallingAccelerationService _fallingAccelerationService;
 
-        public BallsFactory(IConfigProvider configProvider, IViewsFactory viewsFactory)
+        public BallsFactory(IConfigProvider configProvider, IViewsFactory viewsFactory, IFallingAccelerationService fallingAccelerationService)
         {
             _configProvider = configProvider;
             _viewsFactory = viewsFactory;
+            _fallingAccelerationService = fallingAccelerationService;
         }
         
 
@@ -40,7 +42,10 @@ namespace Source.Infrastructure.Services.Factories
             var ballConfig = _configProvider.Get<BallConfig, BallType>(identifier: BallType.Red, ConfigPath.Balls);
 
             var ballView = _viewsFactory.CreateBallView(BallType.Red);
-            var ballModel = new RedBall(ballConfig);
+            var ballModel = new RedBall(
+                ballConfig, 
+                _fallingAccelerationService.GetCurrentSceneAccelerator());
+            
             new BallController(ballView, ballModel).Initialize();
 
             return ballModel;

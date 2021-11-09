@@ -23,20 +23,35 @@ namespace Source.Infrastructure.Root
 
         public void Composite()
         {
+            InitializeRandomPositionGenerator();
+
             var gameObjectsFactory = _services.Single<IGameObjectsFactory>();
+            
             var camera = gameObjectsFactory.CreateCamera();
             IPlayerInput input = gameObjectsFactory.CreateInput(camera);
-            
             gameObjectsFactory.CreateBallsInputHandler(input);
 
             IViewsFactory viewsFactory = _services.Single<IViewsFactory>();
-            IBallsSpawnerFactory ballsSpawnerFactory = _services.Single<IBallsSpawnerFactory>();
-            ballsSpawnerFactory.Initialize(
-                viewsFactory.CreateFixedUpdatable(),
-                viewsFactory.CreateUpdatable(), 
-                new BallsObjectPool(_services.Single<IBallsFactory>()));
+            var ballsSpawnerFactory = InitializeBallsSpawnerFactory();
 
             ballsSpawnerFactory.CreateSpawner(CurrentSceneName());
+        }
+
+        private IBallsSpawnerFactory InitializeBallsSpawnerFactory()
+        {
+            IBallsSpawnerFactory ballsSpawnerFactory = _services.Single<IBallsSpawnerFactory>();
+            ballsSpawnerFactory.Initialize(
+                new BallsObjectPool(_services.Single<IBallsFactory>()));
+            return ballsSpawnerFactory;
+        }
+
+        private void InitializeRandomPositionGenerator()
+        {
+            var configProvider = _services.Single<IConfigProvider>();
+            IBallsSpawnerLevelConfig levelConfig =
+                configProvider.Get<LevelConfig, string>(identifier: CurrentSceneName(), ConfigPath.Levels);
+            _services.Single<IRandomPositionGenerator>().Initialize(
+                positionsDoNotRepeatAmount: levelConfig.BallsByOneSpawn.Max);
         }
 
         private static string CurrentSceneName() => SceneManager.GetActiveScene().name;

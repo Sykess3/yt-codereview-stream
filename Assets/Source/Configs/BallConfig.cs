@@ -3,7 +3,6 @@ using Source.Infrastructure;
 using Source.Infrastructure.Services;
 using Source.Models;
 using Source.Models.Balls;
-using Source.Models.Configs;
 using Source.Views;
 using Source.Views.Balls;
 using UnityEngine;

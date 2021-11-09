@@ -1,5 +1,4 @@
 using System;
-using Source.Models.Configs;
 using UnityEngine;
 
 namespace Source.Models.Balls
@@ -7,9 +6,8 @@ namespace Source.Models.Balls
     public abstract class Ball : IFixedUpdatable
     {
         private readonly IBallConfig _config;
+        private readonly FallingAcceleration _fallingAcceleration;
         private Vector3 _position;
-        private bool _isPopped;
-        private bool _isOutOfBounds;
 
         public BallType Type => _config.Type;
         public event Action<Vector3> PositionChanged;
@@ -27,38 +25,26 @@ namespace Source.Models.Balls
             }
         }
 
-        protected Ball(IBallConfig config)
+        protected Ball(IBallConfig config, FallingAcceleration fallingAcceleration)
         {
             _config = config;
+            _fallingAcceleration = fallingAcceleration;
         }
 
         public void Initialize(Vector3 startPosition)
         {
-            _isPopped = false;
-            _isOutOfBounds = false;
             Position = startPosition;
             Initialized?.Invoke();
         }
         
-        public void FixedUpdate(float fixedDeltaTime)
-        {
-            if (_isPopped || _isOutOfBounds)
-                return;
-
-            Fall(fixedDeltaTime);
-        }
+        public void FixedUpdate(float fixedDeltaTime) => Fall(fixedDeltaTime);
 
         public void Pop()
         {
-            _isPopped = true;
             OnPop();
             Popped?.Invoke(this);
         }
-        public void FallOutOfBounds()
-        {
-            _isOutOfBounds = true;
-            FeltOutOfBounds?.Invoke(this);
-        }
+        public void FallOutOfBounds() => FeltOutOfBounds?.Invoke(this);
 
         protected virtual void OnPop()
         {
@@ -66,7 +52,9 @@ namespace Source.Models.Balls
 
         private void Fall(float fixedDeltaTime)
         {
-            Position += _config.Velocity * fixedDeltaTime;
+            Position += CurrentVelocity() * fixedDeltaTime;
         }
+
+        private Vector3 CurrentVelocity() => _config.Velocity + _fallingAcceleration.Get();
     }
 }

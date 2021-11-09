@@ -20,13 +20,13 @@ namespace Source.Controllers
 
         public void Initialize()
         {
-            View.Created += OnCreated;
+            View.Created += OnCreate;
             View.Destroyed += OnDestroy;
             
             View.OnCreate();
         }
 
-        private void OnCreated()
+        private void OnCreate()
         {
             if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(
                 out var fixedUpdatableModel, out var fixedUpdatableView))

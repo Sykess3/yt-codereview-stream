@@ -9,23 +9,22 @@ namespace Source.Models.Balls
 {
     public class BallsSpawner : IUpdatable
     {
-        public const int MaxBallsByOneSpawn = 4;
         private readonly IRandomBallGenerator _randomBallGeneratorGenerator;
         private readonly IRandomPositionGenerator _randomPositionGenerator;
-        private readonly LevelConfig _levelConfig;
+        private readonly IBallsSpawnerLevelConfig _levelConfig;
         private readonly Ball[] _randomBalls;
         private float _timeToSpawn;
         private float _elapsedTime;
 
         public BallsSpawner(
             IRandomBallGenerator randomBallGeneratorGenerator,
-            LevelConfig levelConfig,
+            IBallsSpawnerLevelConfig levelConfig,
             IRandomPositionGenerator randomPositionGenerator)
         {
             _randomBallGeneratorGenerator = randomBallGeneratorGenerator;
             _levelConfig = levelConfig;
             _randomPositionGenerator = randomPositionGenerator;
-            _randomBalls = new Ball[MaxBallsByOneSpawn];
+            _randomBalls = new Ball[levelConfig.BallsByOneSpawn.Max];
         }
 
         public void Update(float deltaTime)
@@ -40,7 +39,7 @@ namespace Source.Models.Balls
 
         private void CreateRandomAmountOfBalls()
         {
-            var count = Random.Range(1, MaxBallsByOneSpawn + 1);
+            var count = Random.Range(_levelConfig.BallsByOneSpawn.Min, _levelConfig.BallsByOneSpawn.Max + 1);
             FillRandomBallArray(count);
             InitializeBallsByPositions(count);
         }
@@ -78,7 +77,7 @@ namespace Source.Models.Balls
         private void UpdateTimeToSpawn()
         {
             _elapsedTime = -_timeToSpawn;
-            _timeToSpawn = Random.Range(_levelConfig.MinTimeToSpawnInSeconds, _levelConfig.MaxTimeToSpawnInSeconds);
+            _timeToSpawn = Random.Range(_levelConfig.DelayBetweenSpawn.Min, _levelConfig.DelayBetweenSpawn.Max);
         }
 
         private bool TimeForSpawnPassed() => _elapsedTime >= _timeToSpawn;

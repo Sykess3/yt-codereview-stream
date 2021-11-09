@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Source.Views.Balls
 {
-    public class BallView : FixedUpdatableView, ITriggerView
+    public class BallView : FixedUpdatableView
     {
         [SerializeField] private OutOfCameraObserver _outOfCameraObserver;
         [SerializeField] private TriggerObserver _triggerObserver;
