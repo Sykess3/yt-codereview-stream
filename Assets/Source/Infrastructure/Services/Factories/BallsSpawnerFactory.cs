@@ -37,6 +37,7 @@ namespace Source.Infrastructure.Services.Factories
             
             var ballsSpawnerModel = new BallsSpawner(_randomBallGenerator, config, _randomPositionGenerator);
             var ballsSpawnerView = _viewsFactory.CreateBallsSpawnerView();
+            ballsSpawnerView.Construct(ballsSpawnerModel);
             new BallsSpawnerController(ballsSpawnerView, ballsSpawnerModel).Initialize();
             
             return ballsSpawnerModel;

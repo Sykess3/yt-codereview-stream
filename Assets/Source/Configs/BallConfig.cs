@@ -16,9 +16,9 @@ namespace Source.Configs
         [SerializeField] private BallType _type;
         [Tooltip("Units is second")]
         [SerializeField] private float _startSpeed;
-        [SerializeField] private int _points;
+        [SerializeField] private int _cost;
         [SerializeField] private int _damage;
-        [SerializeField] private Color _color;
+        [SerializeField] private ParticleSystem _popVFXPrefab;
 
         private Vector3 _velocity;
         
@@ -27,8 +27,8 @@ namespace Source.Configs
         BallType IConfigWithIdentifier<BallType>.Identifier => _type;
         public Vector3 Velocity => _velocity;
         public int Damage => _damage;
-        public int Points => _points;
-        public Color Color => _color;
+        public int Cost => _cost;
+        public ParticleSystem PopVFXPrefab => _popVFXPrefab;
         private void OnValidate() => _velocity = new Vector3(0, -_startSpeed, 0);
     }
 }

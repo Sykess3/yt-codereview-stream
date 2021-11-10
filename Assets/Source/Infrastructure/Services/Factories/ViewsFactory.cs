@@ -13,7 +13,7 @@ namespace Source.Infrastructure.Services.Factories
         private readonly IAssetsProvider _assetsProvider;
         private readonly IConfigProvider _configProvider;
         private Transform _ballsParent;
-        private Transform _otherViewsParent;
+        private Transform _viewsToTurnOffOnGameOver;
 
         public ViewsFactory(IAssetsProvider assetsProvider, IConfigProvider configProvider)
         {
@@ -28,38 +28,35 @@ namespace Source.Infrastructure.Services.Factories
             return speedCalculatorObject.AddComponent<FallingAccelerationView>();
         }
 
-        public BallsSpawnerView CreateBallsSpawnerView() => 
+        public BallsSpawnerView CreateBallsSpawnerView() =>
             new GameObject("BallsSpawnerView").AddComponent<BallsSpawnerView>();
+
 
         public BallView CreateBallView(BallType type)
         {
             if (_ballsParent == null)
             {
                 _ballsParent = new GameObject("Balls").transform;
-                SetViewsParentTo(_ballsParent.gameObject);
             }
 
-            switch (type)
-            {
-                case BallType.Red:
-                    return CreateRedBall();
-                default:
-                    throw new System.ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+            return CreatBall(type);
         }
 
-        private BallView CreateRedBall()
+        private BallView CreatBall(BallType ballType)
         {
-            var config = _configProvider.Get<BallConfig, BallType>(identifier: BallType.Red, ConfigPath.Balls);
-            return Object.Instantiate(config.Prefab, _ballsParent);
+            var config = _configProvider.Get<BallConfig, BallType>(identifier: ballType, ConfigPath.Balls);
+            BallView ballView = Object.Instantiate(config.Prefab, _ballsParent);
+
+            ballView.GetComponent<BallVFX>().Construct(config.PopVFXPrefab);
+            return ballView;
         }
 
         private void SetViewsParentTo(GameObject gameObject)
         {
-            if (_otherViewsParent == null)
-                _otherViewsParent = new GameObject("Views").transform;
+            if (_viewsToTurnOffOnGameOver == null)
+                _viewsToTurnOffOnGameOver = new GameObject("ViewsToTurnOffOnGameOver").transform;
 
-            gameObject.transform.parent = _otherViewsParent;
+            gameObject.transform.parent = _viewsToTurnOffOnGameOver;
         }
     }
 }

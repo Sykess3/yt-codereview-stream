@@ -1,18 +1,16 @@
-﻿using System;
-using Source.Models;
-using Source.Models.Balls;
+﻿using Source.Models;
 using Source.Views;
-using Source.Views.Balls;
-using Unity.Collections.LowLevel.Unsafe;
 
 namespace Source.Controllers
 {
-    public abstract class Controller 
+    public abstract class Controller<TModel, TView>
+        where TModel : IModel
+        where TView : View<TModel>
     {
-        protected readonly View View;
-        protected readonly IModel Model;
+        protected readonly TView View;
+        protected readonly TModel Model;
 
-        protected Controller(View view, IModel model)
+        protected Controller(TView view, TModel model)
         {
             View = view;
             Model = model;
@@ -22,16 +20,16 @@ namespace Source.Controllers
         {
             View.Created += OnCreate;
             View.Destroyed += OnDestroy;
-            
+
             View.OnCreate();
         }
 
         private void OnCreate()
         {
-            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(
+            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView<TModel>>(
                 out var fixedUpdatableModel, out var fixedUpdatableView))
                 fixedUpdatableView.OnFixedUpdate += fixedUpdatableModel.FixedUpdate;
-            if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView>(
+            if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView<TModel>>(
                 out var updatableModel, out var updatableView))
                 updatableView.OnUpdate += updatableModel.Update;
 
@@ -40,27 +38,29 @@ namespace Source.Controllers
 
         private void OnDestroy()
         {
-            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView>(out var model, out var view))
+            if (UnityCallBackFunctionsContractIsCorrect<IFixedUpdatable, FixedUpdatableView<TModel>>(out var model,
+                out var view))
                 view.OnFixedUpdate -= model.FixedUpdate;
-            if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView>(
+            if (UnityCallBackFunctionsContractIsCorrect<IUpdatable, UpdatableView<TModel>>(
                 out var updatableModel, out var updatableView))
                 updatableView.OnUpdate -= updatableModel.Update;
 
             UnSubscribe();
         }
 
-        private bool UnityCallBackFunctionsContractIsCorrect< TModel, TView>(out TModel upcastedModel, out TView upcastedView)
+        private bool UnityCallBackFunctionsContractIsCorrect<TModel_, TView_>(out TModel_ upcastedModel,
+            out TView_ upcastedView)
         {
-            if (Model is TModel model && View is TView view)
+            if (Model is TModel_ model && View is TView_ view)
             {
                 upcastedModel = model;
                 upcastedView = view;
                 return true;
             }
-            
+
             upcastedModel = default;
             upcastedView = default;
-            
+
             return false;
         }
 

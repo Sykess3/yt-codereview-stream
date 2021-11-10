@@ -3,17 +3,16 @@ using UnityEngine;
 
 namespace Source.Models.Balls
 {
-    public abstract class Ball : IFixedUpdatable
+    public class Ball : IFixedUpdatable
     {
         private readonly IBallConfig _config;
-        private readonly FallingAcceleration _fallingAcceleration;
+        private readonly Falling _falling;
         private Vector3 _position;
+        private bool _canFall;
+        public int Cost => _config.Cost;
 
         public BallType Type => _config.Type;
-        public event Action<Vector3> PositionChanged;
-        public event Action<Ball> Popped;
-        public event Action<Ball> FeltOutOfBounds;
-        public event Action Initialized;
+        public int Damage => _config.Damage;
 
         private Vector3 Position
         {
@@ -25,36 +24,50 @@ namespace Source.Models.Balls
             }
         }
 
-        protected Ball(IBallConfig config, FallingAcceleration fallingAcceleration)
+        public event Action<Vector3> PositionChanged;
+
+        public event Action<Ball> Popped;
+
+        public event Action<Ball> FeltOutOfBounds;
+
+        public event Action Initialized;
+
+
+        public Ball(IBallConfig config, FallingAcceleration acceleration, Vector3 screenBottomBorder)
         {
             _config = config;
-            _fallingAcceleration = fallingAcceleration;
+            _falling = new Falling(acceleration, _config.Velocity, screenBottomBorder);
+            _falling.FeltOutOfBounds += FallOutOfBounds;
         }
 
         public void Initialize(Vector3 startPosition)
         {
+            _canFall = true;
             Position = startPosition;
             Initialized?.Invoke();
         }
-        
-        public void FixedUpdate(float fixedDeltaTime) => Fall(fixedDeltaTime);
+
+        public void FixedUpdate(float fixedDeltaTime)
+        {
+            if (_canFall) 
+                Position = _falling.Execute(Position, fixedDeltaTime);
+        }
 
         public void Pop()
         {
+            _canFall = false;
             OnPop();
             Popped?.Invoke(this);
         }
-        public void FallOutOfBounds() => FeltOutOfBounds?.Invoke(this);
+
+        private void FallOutOfBounds()
+        {
+            _canFall = false;
+            FeltOutOfBounds?.Invoke(this);
+        }
 
         protected virtual void OnPop()
         {
         }
-
-        private void Fall(float fixedDeltaTime)
-        {
-            Position += CurrentVelocity() * fixedDeltaTime;
-        }
-
-        private Vector3 CurrentVelocity() => _config.Velocity + _fallingAcceleration.Get();
     }
 }

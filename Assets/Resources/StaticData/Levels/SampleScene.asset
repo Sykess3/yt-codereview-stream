@@ -13,15 +13,13 @@ MonoBehaviour:
   m_Name: SampleScene
   m_EditorClassIdentifier: 
   _sceneName: SampleScene
-  _goal: 0
-  _timeToSpawn:
-    Min: 0
-    Max: 0
+  _goal: 10
   _delayBetweenSpawn:
-    Min: 0
-    Max: 0
-  _timeToSpeedUp: 0
-  _speedIncreaseAmountAfterSpeedUp: 0
+    Min: 1
+    Max: 2
+  _timeToSpeedUp: 10
+  _speedIncreaseAmountAfterSpeedUp: 1
   _ballsByOneSpawn:
-    Min: 0
-    Max: 0
+    Min: 1
+    Max: 3
+  _startHP: 10

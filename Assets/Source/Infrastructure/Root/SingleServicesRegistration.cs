@@ -45,24 +45,37 @@ namespace Source.Infrastructure.Root
             _services.RegisterSingle<IBallsFactory>(new BallsFactory(
                 _services.Single<IConfigProvider>(),
                 _services.Single<IViewsFactory>(),
-                _services.Single<IFallingAccelerationService>()));
+                _services.Single<IFallingAccelerationService>(),
+                ScreenBottomBorder()));
 
             _services.RegisterSingle<IGameObjectsFactory>(new GameObjectsFactory(
                 _services));
+            _services.RegisterSingle<ISavedLoadService>(new SavedLoadService());
+            _services.RegisterSingle<IPersistentProgress>(new PersistentProgress());
+            _services.RegisterSingle<IUIFactory>(new UIFactory(
+                _services.Single<IAssetsProvider>(),
+                _services.Single<IPersistentProgress>(),
+                _services.Single<ISavedLoadService>()));
         }
 
         private RandomPositionGenerator GetRandomPositionGenerator()
         {
-            var assetsProvider = _services.Single<IAssetsProvider>();
-            var camera = assetsProvider.Load<Camera>(PrefabPath.Camera);
 
-            Vector3 screenToWorldPoint = camera.ScreenToWorldPoint(
-                new Vector3(Screen.width, Screen.height, 10));
+            Vector3 screenWidthAndHeight = ScreenWidthAndHeight();
 
-            (float, float) xBorders = (-screenToWorldPoint.x * 0.5f, screenToWorldPoint.x * 0.5f);
-            float height = screenToWorldPoint.y;
-            float depth = screenToWorldPoint.z;
+            (float, float) xBorders = (-screenWidthAndHeight.x, screenWidthAndHeight.x);
+            float height = screenWidthAndHeight.y;
+            float depth = screenWidthAndHeight.z;
             return new RandomPositionGenerator(xBorders, depth, height);
         }
+
+        private Vector3 ScreenWidthAndHeight()
+        {
+            var camera = _services.Single<IAssetsProvider>().Load<Camera>(PrefabPath.Camera);
+            return camera.ScreenToWorldPoint(
+                new Vector3(Screen.width, Screen.height, 10));
+        }
+
+        private Vector3 ScreenBottomBorder() => new Vector3(0, -ScreenWidthAndHeight().y, 0);
     }
 }

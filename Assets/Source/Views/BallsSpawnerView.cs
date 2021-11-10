@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+﻿using Source.Models.Balls;
 
 namespace Source.Views
 {
-    public class BallsSpawnerView : UpdatableView
+    public class BallsSpawnerView : UpdatableView<BallsSpawner>
     {
         
     }

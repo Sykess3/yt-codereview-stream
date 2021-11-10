@@ -1,13 +1,14 @@
 ﻿using System;
 using Source.Infrastructure.Root;
 using Source.Views;
+using UnityEngine.SceneManagement;
 
 namespace Source.Infrastructure.Services
 {
     public class LevelLoader : ILevelLoader
     {
-        private readonly ServiceLocator _services;
-        private readonly ISceneLoader _sceneLoader;
+        private static  ServiceLocator _services;
+        private static  ISceneLoader _sceneLoader;
 
         public LevelLoader(ServiceLocator services, ISceneLoader sceneLoader)
         {
@@ -20,7 +21,12 @@ namespace Source.Infrastructure.Services
             _sceneLoader.Load(name, EnterSceneCompositeRoot);
         }
 
-        private void EnterSceneCompositeRoot()
+        public static void Reload()
+        {
+            _sceneLoader.Reload(EnterSceneCompositeRoot);
+        }
+
+        private static void EnterSceneCompositeRoot()
         {
             new SceneCompositeRoot(_services).Composite();
         }

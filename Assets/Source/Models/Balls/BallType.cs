@@ -2,6 +2,9 @@
 {
     public enum BallType
     {
-        Red
+        Red,
+        Blue,
+        Orange,
+        Purple
     }
 }

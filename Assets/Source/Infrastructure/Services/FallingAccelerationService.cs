@@ -23,19 +23,20 @@ namespace Source.Infrastructure.Services
 
         public FallingAcceleration GetCurrentSceneAccelerator()
         {
-            if (WasNotCreatedInCurrentScene()) 
+            if (WasNotCreatedInCurrentScene())
                 _currentSceneModel = CreateSpeedCalculator();
-            
+
             return _currentSceneModel;
         }
 
         private FallingAcceleration CreateSpeedCalculator()
         {
-            _currentSceneView = _viewsFactory.CreateSpeedCalculatorView();
             IFallingAccelerationLevelConfig levelConfig =
                 _configProvider.Get<LevelConfig, string>(identifier: CurrentSceneName(), ConfigPath.Levels);
 
-            var model = new FallingAcceleration( levelConfig);
+            var model = new FallingAcceleration(levelConfig);
+            _currentSceneView = _viewsFactory.CreateSpeedCalculatorView();
+            _currentSceneView.Construct(model);
             new FallingAccelerationController(_currentSceneView, model).Initialize();
             return model;
         }

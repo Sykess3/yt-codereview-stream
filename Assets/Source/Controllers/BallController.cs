@@ -7,45 +7,47 @@ using UnityEngine;
 
 namespace Source.Controllers
 {
-    public class BallController : Controller
+    public class BallController : Controller<Ball, BallView>
     {
-        private Ball _model => Model as Ball;
-        private BallView _view => View as BallView;
-
-        public BallController(View view, IModel model) : base(view, model) { }
+        private readonly PlayerHealth _playerHealth;
+        
+        public BallController(BallView view, Ball model, PlayerHealth playerHealth) : base(view, model)
+        {
+            _playerHealth = playerHealth;
+        }
 
         protected override void Subscribe()
         {
-            _view.Clicked += OnClick;
-            _view.FeltOutOfBounds += OnFeltOutOfBounds;
-            _model.PositionChanged += _view.ChangePosition;
-            _model.Initialized += OnModelInitialize;
+            View.Clicked += OnClick;
+            Model.FeltOutOfBounds += OnFeltOutOfBounds;
+            Model.PositionChanged += View.ChangePosition;
+            Model.Initialized += OnModelInitialize;
         }
 
         protected override void UnSubscribe()
         {
-            _model.PositionChanged -= _view.ChangePosition;
-            _view.Clicked -= OnClick;
-            _view.FeltOutOfBounds -= OnFeltOutOfBounds;
-            _model.Initialized -= OnModelInitialize;
+            View.Clicked -= OnClick;
+            Model.PositionChanged -= View.ChangePosition;
+            Model.FeltOutOfBounds -= OnFeltOutOfBounds;
+            Model.Initialized -= OnModelInitialize;
         }
 
         private void OnModelInitialize()
         {
-            _view.gameObject.SetActive(true);
+            View.GraphicModel.SetActive(true);
             Physics.SyncTransforms();
         }
 
-        private void OnFeltOutOfBounds(BallView ballView)
+        private void OnFeltOutOfBounds(Ball ball)
         {
-            _model.FallOutOfBounds();
-            ballView.gameObject.SetActive(false);
+            _playerHealth.TakeDamage(Model.Damage);
+            View.GraphicModel.SetActive(false);
         }
 
         private void OnClick(BallView ballView)
         {
-            _model.Pop();
-            ballView.gameObject.SetActive(false);
+            Model.Pop();
+            View.GraphicModel.SetActive(false);
         }
     }
 }

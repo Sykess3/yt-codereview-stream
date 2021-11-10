@@ -1,11 +1,12 @@
 ﻿using Source.Models;
+using Source.Models.Balls;
 using Source.Views;
 
 namespace Source.Controllers
 {
-    public class BallsSpawnerController : Controller
+    public class BallsSpawnerController : Controller<BallsSpawner, BallsSpawnerView>
     {
-        public BallsSpawnerController(View view, IModel model) : base(view, model)
+        public BallsSpawnerController(BallsSpawnerView view, BallsSpawner model) : base(view, model)
         {
         }
 

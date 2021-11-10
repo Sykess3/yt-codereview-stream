@@ -1,11 +1,7 @@
-﻿using Source.Configs;
-using Source.Controllers;
+﻿using Source.Common;
 using Source.Infrastructure.Services.AssetManagement;
 using Source.Models;
-using Source.Models.Balls;
-using Source.Models.Randomizators;
 using Source.Views;
-using Source.Views.Balls;
 using UnityEngine;
 
 namespace Source.Infrastructure.Services.Factories
@@ -24,10 +20,10 @@ namespace Source.Infrastructure.Services.Factories
             return _assetsProvider.Instantiate<Camera>(PrefabPath.Camera);
         }
 
-        public BallsInputHandler CreateBallsInputHandler(IPlayerInput input)
+        public BallsInputHandler CreateBallsInputHandler(IPlayerInput input, Score score)
         {
             var inputHandler = _assetsProvider.Instantiate<BallsInputHandler>(PrefabPath.BallsInputHandler);
-            return inputHandler.Construct(input);
+            return inputHandler.Construct(input, score);
         }
 
         public IPlayerInput CreateInput(Camera camera)

@@ -15,3 +15,6 @@ MonoBehaviour:
   _ballView: {fileID: 4199207678793937410, guid: 450f21c42c2d8e140b51922100404cee, type: 3}
   _type: 0
   _startSpeed: 4
+  _cost: 4
+  _damage: 5
+  _popVFXPrefab: {fileID: 1226193617411127486, guid: b4ff29e6ca4181841a40a206d3c628d3, type: 3}

@@ -4,16 +4,14 @@ using Source.Views;
 
 namespace Source.Controllers
 {
-    public class FallingAccelerationController : Controller
+    public class FallingAccelerationController : Controller<FallingAcceleration, FallingAccelerationView>
     {
-        private FallingAccelerationView _view => View as FallingAccelerationView;
-        private FallingAcceleration _model => Model as FallingAcceleration;
-        public FallingAccelerationController(View view, IModel model) : base(view, model)
+        public FallingAccelerationController(FallingAccelerationView view, FallingAcceleration model) : base(view, model)
         {
         }
 
-        protected override void Subscribe() => _model.SpeedIncreased += _view.InformAboutSpeedUp;
+        protected override void Subscribe() => Model.SpeedIncreased += View.InformAboutSpeedUp;
 
-        protected override void UnSubscribe() => _model.SpeedIncreased -= _view.InformAboutSpeedUp;
+        protected override void UnSubscribe() => Model.SpeedIncreased -= View.InformAboutSpeedUp;
     }
 }
